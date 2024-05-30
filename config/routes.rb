@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   root to: 'static_pages#home'
+  get '/property/:id' => 'static_pages#property'
 
   namespace :api do
     # Add routes below this line
