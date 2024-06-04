@@ -2,7 +2,7 @@
 import React from 'react';
 import Layout from '@src/layout';
 import BookingWidget from './bookingWidget';
-import { handleErrors } from '@utils/fetchHelper'
+import { handleErrors } from '@utils/fetchHelper';
 
 import './property.scss';
 
@@ -13,6 +13,7 @@ class Property extends React.Component {
   };
 
   componentDidMount() {
+    console.log(process.env.STRIPE_PUBLISHABLE_KEY);
     fetch(`/api/properties/${this.props.property_id}`)
       .then(handleErrors)
       .then((data) => {
@@ -76,7 +77,7 @@ class Property extends React.Component {
               <hr />
               <p>{description}</p>
             </div>
-            <div className="col-12 col-lg-5">
+            <div className='col-12 col-lg-5'>
               <BookingWidget property_id={id} price_per_night={price_per_night} />
             </div>
           </div>
