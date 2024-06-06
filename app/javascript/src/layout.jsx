@@ -15,6 +15,21 @@ const Layout = (props) => {
                   Home
                 </a>
               </li>
+              <li className="nav-item">
+                <a href='/host_property' className='nav-link'>
+                  Host Property
+                </a>
+              </li>
+              <li className="nav-item">
+                <a href='#' className='nav-link'>
+                  Bookings
+                </a>
+              </li>
+              <li className="nav-item">
+                <a href='#' className='nav-link'>
+                  Log Out
+                </a>
+              </li>
             </ul>
           </div>
         </div>
