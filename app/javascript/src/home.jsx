@@ -59,7 +59,7 @@ class Home extends React.Component {
                   <a href={`/property/${property.id}`} className='text-body text-decoration-none'>
                     <div
                       className='property-image mb-1 rounded'
-                      style={{ backgroundImage: `url(${property.image_url})` }}
+                      style={{ backgroundImage: `url(${property.image})` }}
                     />
                     <p className='text-uppercase mb-0 text-secondary'>
                       <small>
