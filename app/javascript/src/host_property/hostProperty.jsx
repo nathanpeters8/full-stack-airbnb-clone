@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '@src/layout';
-import { safeCredentials, handleErrors } from '@utils/fetchHelper';
+import { safeCredentials, handleErrors, safeCredentialsForm } from '@utils/fetchHelper';
 
 import './hostProperty.scss';
 
@@ -8,9 +8,13 @@ class HostProperty extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      authenticated: false,
       title: '',
       description: '',
       price: 0,
+      city: '',
+      country: '',
+      property_type: '',
       max_guests: 1,
       rooms: 1,
       beds: 1,
@@ -20,12 +24,58 @@ class HostProperty extends React.Component {
     };
   }
 
+  componentDidMount() {
+    fetch('/api/authenticated')
+      .then(handleErrors)
+      .then((data) => {
+        this.setState({
+          authenticated: data.authenticated,
+          loading: false,
+        });
+      });
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
-    const form = e.target;
+
+    var formData = new FormData();
+    formData.set('property[title]', this.state.title);
+    formData.set('property[description]', this.state.description);
+    formData.set('property[price_per_night]', this.state.price);
+    formData.set('property[city]', this.state.city);
+    formData.set('property[country]', this.state.country);
+    formData.set('property[property_type]', this.state.property_type);
+    formData.set('property[max_guests]', this.state.max_guests);
+    formData.set('property[bedrooms]', this.state.rooms);
+    formData.set('property[beds]', this.state.beds);
+    formData.set('property[baths]', this.state.baths);
+    formData.set('property[image]', this.state.image, this.state.image.name);
+
+    fetch(
+      '/api/properties',
+      safeCredentialsForm({
+        method: 'POST',
+        body: formData,
+      })
+    )
+      .then(handleErrors)
+      .then((response) => {
+        console.log(response);
+        // redirect to the home page
+        window.location.href= '/';
+      });
   };
 
   render() {
+    if (!this.state.authenticated) {
+      return (
+        <Layout>
+          <div className='border p-4 mb-4'>
+            Please <a href={`/login?redirect_url=${window.location.pathname}`}>log in</a> to make a booking.
+          </div>
+        </Layout>
+      );
+    }
     return (
       <Layout>
         <div className='container'>
@@ -36,6 +86,7 @@ class HostProperty extends React.Component {
                 <div className='col-10'>
                   <input
                     type='text'
+                    name='title'
                     placeholder='Property Title'
                     className='form-control text-center'
                     onChange={(e) => {
@@ -54,6 +105,40 @@ class HostProperty extends React.Component {
                     }}
                     value={this.state.description}
                   ></textarea>
+                </div>
+                <div className='col-10'>
+                  <input
+                    type='text'
+                    name='property_type'
+                    placeholder='Property Type'
+                    className='form-control text-center'
+                    onChange={(e) => {
+                      this.setState({ property_type: e.target.value });
+                    }}
+                    value={this.state.property_type}
+                  />
+                </div>
+                <div className='row justify-content-center text-center mt-4'>
+                  <div className='col-4'>
+                    <input
+                      type='text'
+                      name='city'
+                      placeholder='City'
+                      className='form-control text-center'
+                      onChange={(e) => this.setState({ city: e.target.value })}
+                      value={this.state.city}
+                    />
+                  </div>
+                  <div className='col-4'>
+                    <input
+                      type='text'
+                      name='country'
+                      placeholder='Country'
+                      className='form-control text-center'
+                      onChange={(e) => this.setState({ country: e.target.value })}
+                      value={this.state.value}
+                    />
+                  </div>
                 </div>
                 <div className='row justify-content-center text-center mt-4'>
                   <div className='col-3 me-3'>
@@ -168,7 +253,7 @@ class HostProperty extends React.Component {
                     accept='image/*'
                     className='form-control'
                     onChange={(e) => {
-                      this.setState({ image: e.target.value });
+                      this.setState({ image: e.target.files[0] });
                     }}
                   />
                 </div>
