@@ -21,7 +21,7 @@ const Layout = (props) => {
                 </a>
               </li>
               <li className="nav-item">
-                <a href='#' className='nav-link'>
+                <a href='/bookings' className='nav-link'>
                   Bookings
                 </a>
               </li>
