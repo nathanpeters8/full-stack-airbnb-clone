@@ -9,11 +9,12 @@ Rails.application.routes.draw do
   namespace :api do
     # Add routes below this line
     resources :users, only: [:create]
-    resources :sessions, only: %i[create destroy]
+    resources :sessions, only: %i[create]
     resources :properties, only: [:index, :show, :create]
     resources :bookings, only: [:create]
     resources :charges, only: [:create]
 
+    delete '/logout' => 'sessions#destroy'
     get '/properties/:id/bookings' => 'bookings#get_property_bookings'
     get '/authenticated' => 'sessions#authenticated'
     get '/users/:username/bookings' => 'bookings#get_user_bookings'

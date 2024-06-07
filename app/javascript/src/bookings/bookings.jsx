@@ -10,6 +10,8 @@ class Bookings extends React.Component {
     this.state = {
       bookings: [],
       username: '',
+      paid: false,
+      authenticated: false,
       show_booked_properties: true,
       loading: true,
     };
@@ -21,40 +23,42 @@ class Bookings extends React.Component {
       .then((data) => {
         this.setState({
           username: data.username,
+          authenticated: data.authenticated,
         });
       })
       .then(() => {
-        this.showProperties();
+        if(this.state.authenticated) {
+          this.showProperties();
+        }
       });
   }
 
   showProperties = () => {
-    if (this.state.show_booked_properties) {
-      fetch(`/api/users/${this.state.username}/bookings`)
-        .then(handleErrors)
-        .then((data) => {
-          console.log(data);
-          this.setState({
-            bookings: data.bookings,
-            loading: false,
-          });
+    let endpoint = this.state.show_booked_properties ? 'bookings' : 'property_bookings';
+
+    fetch(`/api/users/${this.state.username}/${endpoint}`)
+      .then(handleErrors)
+      .then((data) => {
+        console.log(data);
+        this.setState({
+          bookings: data.bookings,
+          loading: false,
         });
-    } else {
-      fetch(`/api/users/${this.state.username}/property_bookings`)
-        .then(handleErrors)
-        .then((data) => {
-          console.log(data);
-          this.setState({
-            bookings: data.bookings,
-            loading: false,
-          });
-        });
-    }
+      });
   };
 
   render() {
-    const { bookings, loading } = this.state;
-    {bookings.length === 0 ? <h3>No bookings</h3> : null}
+    const { bookings, loading, authenticated, show_booked_properties } = this.state;
+
+    if (!authenticated) {
+      return (
+        <Layout>
+          <div className='border p-4 mb-4'>
+            Please <a href={`/login?redirect_url=${window.location.pathname}`}>log in</a> to make a booking.
+          </div>
+        </Layout>
+      );
+    }
     return (
       <Layout>
         <div className='container'>
@@ -83,18 +87,24 @@ class Bookings extends React.Component {
                   My Property Bookings
                 </button>
               </div>
-              <div className='table-responsive'>
+              {bookings.length === 0 && authenticated && <h1 className='text-center'>No Bookings</h1>}
+              <div className={`table-responsive ${bookings.length === 0 || !authenticated ? 'd-none' : ''}`}>
                 <table className='table table-striped table-hover table-bordered align-items-center'>
                   <thead>
                     <tr className='align-middle text-center'>
                       <th></th>
                       <th>Property</th>
-                      <th>Host</th>
+                      <th>{show_booked_properties ? 'Host' : 'Renter'}</th>
                       <th>Price</th>
-                      <th>Rooms</th>
-                      <th>Beds</th>
-                      <th>Baths</th>
+                      {show_booked_properties && (
+                        <>
+                          <th>Rooms</th>
+                          <th>Beds</th>
+                          <th>Baths</th>
+                        </>
+                        )}
                       <th>Check In - Check Out</th>
+                      <th>Paid?</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -145,17 +155,24 @@ class Bookings extends React.Component {
                               </a>
                             </td>
                             <td>{booking.property.title}</td>
-                            <td>{booking.property.username}</td>
+                            <td>
+                              {this.state.show_booked_properties ? booking.property.username : booking.user.username}
+                            </td>
                             <td>
                               ${booking.property.price_per_night * days}{' '}
                               <small className='fw-light fst-italic'>(${booking.property.price_per_night}/day)</small>
                             </td>
-                            <td>{booking.property.bedrooms}</td>
-                            <td>{booking.property.beds}</td>
-                            <td>{booking.property.baths}</td>
+                            {show_booked_properties && (
+                              <>
+                                <td>{booking.property.bedrooms}</td>
+                                <td>{booking.property.beds}</td>
+                                <td>{booking.property.baths}</td>
+                              </>
+                            )}
                             <td>
                               {booking.start_date} - {booking.end_date}
                             </td>
+                            <td>Yes/No</td>
                             <td>
                               <button className='btn btn-danger'>Cancel</button>
                             </td>

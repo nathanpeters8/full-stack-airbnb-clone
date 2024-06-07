@@ -71,7 +71,7 @@ class HostProperty extends React.Component {
       return (
         <Layout>
           <div className='border p-4 mb-4'>
-            Please <a href={`/login?redirect_url=${window.location.pathname}`}>log in</a> to make a booking.
+            Please <a href={`/login?redirect_url=${window.location.pathname}`}>log in</a> to host a property.
           </div>
         </Layout>
       );
