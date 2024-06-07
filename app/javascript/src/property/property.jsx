@@ -45,9 +45,13 @@ class Property extends React.Component {
       user,
     } = property;
 
+    const currentImage = property.image
+      ? property.image
+      : `https://cdn.altcademy.com/assets/images/medium/airbnb_clone/${property.id - 1}.jpg`;
+
     return (
       <Layout>
-        <div className='property-image mb-3' style={{ backgroundImage: `url(${image})` }} />
+        <div className='property-image mb-3' style={{ backgroundImage: `url(${currentImage})` }} />
         <div className='container'>
           <div className='row'>
             <div className='info col-12 col-lg-8'>
