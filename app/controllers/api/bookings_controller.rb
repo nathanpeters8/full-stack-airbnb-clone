@@ -24,6 +24,42 @@ module Api
       render 'api/bookings/index'
     end
 
+    def get_user_bookings
+      token = cookies.signed[:airbnb_session_token]
+      session = Session.find_by(token: token)
+      user = session.user
+
+      return render json: { error: 'user not logged in' }, status: :unauthorized if !session
+
+      @bookings = user.bookings.where("end_date > ? ", Date.today)
+      if @bookings.empty?
+        return render json: { error: 'no bookings found' }, status: :not_found
+      end
+      
+      render 'api/bookings/index'
+    end
+
+    def get_user_properties_bookings
+      token = cookies.signed[:airbnb_session_token]
+      session = Session.find_by(token: token)
+      user = session.user
+
+      return render json: { error: 'user not logged in' }, status: :unauthorized if !session
+
+      # get all bookings for properties that the user owns
+      @bookings = user.properties.map { |property| property.bookings.where("end_date > ?", Date.today) }.flatten
+
+        # Add some logging
+      Rails.logger.debug "User properties: #{user.properties.inspect}"
+      Rails.logger.debug "Bookings: #{@bookings.inspect}"
+
+      if @bookings.empty?
+        return render json: { error: 'no bookings found' }, status: :not_found
+      end
+      
+      render 'api/bookings/index'
+    end
+
     private
 
     def booking_params
