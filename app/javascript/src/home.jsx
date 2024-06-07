@@ -54,12 +54,13 @@ class Home extends React.Component {
           <p className='text-secondary mb-3'>Explore some of the best-reviewed stays in the world</p>
           <div className='row'>
             {properties.map((property) => {
+              let image = property.image ? property.image : `https://cdn.altcademy.com/assets/images/medium/airbnb_clone/${property.id-1}.jpg`;
               return (
                 <div className='col-6 col-lg-4 mb-4 property' key={property.id}>
                   <a href={`/property/${property.id}`} className='text-body text-decoration-none'>
                     <div
                       className='property-image mb-1 rounded'
-                      style={{ backgroundImage: `url(${property.image})` }}
+                      style={{ backgroundImage: `url(${image})` }}
                     />
                     <p className='text-uppercase mb-0 text-secondary'>
                       <small>

@@ -15,4 +15,8 @@ class StaticPagesController < ApplicationController
   def host_property
     render 'host_property'
   end
+
+  def bookings
+    render 'bookings'
+  end
 end
