@@ -28,6 +28,21 @@ module Api
       end
     end
 
+    def update
+      token = cookies.signed[:airbnb_session_token]
+      session = Session.find_by(token: token)
+      user = session.user
+
+      @property = user.properties.find_by(id: params[:id])
+      return render json: { error: 'not_found' }, status: :not_found if !@property
+
+      if @property.update(property_params)
+        render 'api/properties/update', status: :ok
+      else
+        render json: { error: @property.errors.full_messages }, status: :unprocessable_entity
+      end
+    end
+
     private
     
     def property_params
