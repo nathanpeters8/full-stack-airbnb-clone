@@ -150,26 +150,41 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
           </select>
         </div>
       </div>
-      <div className="col-8 mt-4 d-flex justify-content-center">
-        {(property.image || previewImage) && (
-          <>
-            <div
-              className='property-image mb-1 rounded me-1'
-              style={{
-                backgroundImage: `url(${previewImage || property.image})`,
-                width: `${formType === 'create' ? '400px' : '250px'}`,
-                height: `${formType === 'create' ? '300px' : '150px'}`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center center',
-                backgroundRepeat: 'no-repeat',
-              }}
-            />
-          </>
-        )}
-      </div>
-      <div className='col-10 mt-4'>
-        <input type='file' name='image' accept='image/*' className='form-control' onChange={handleInputChange} />
-      </div>
+      {(() => {
+        if (formType === 'create' || formType === 'edit') {
+          return null;
+        }
+
+        return (
+          <div className='col-8 mt-4 d-flex justify-content-center'>
+            {(property.image || previewImage) && (
+              <>
+                <div
+                  className='property-image mb-1 rounded me-1'
+                  style={{
+                    backgroundImage: `url(${previewImage || property.image})`,
+                    width: `${formType === 'create' ? '400px' : '250px'}`,
+                    height: `${formType === 'create' ? '300px' : '150px'}`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center center',
+                    backgroundRepeat: 'no-repeat',
+                  }}
+                />
+              </>
+            )}
+          </div>
+        );
+      })()}
+      {(() => {
+        if (formType === 'edit') {
+          return null;
+        }
+        return(
+          <div className='col-10 mt-4'>
+            <input type='file' name='image' accept='image/*' className='form-control' onChange={handleInputChange} />
+          </div>
+        );
+      })()}
       <div className={`col-6 text-center my-4 ${formType === 'edit' ? 'd-none' : ''}`}>
         <button type='submit' className='btn btn-warning'>
           Host Property

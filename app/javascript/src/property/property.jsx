@@ -3,7 +3,7 @@ import React from 'react';
 import Layout from '@src/layout';
 import BookingWidget from './bookingWidget';
 import PropertyForm from '../propertyForm';
-import { handleErrors } from '@utils/fetchHelper';
+import { handleErrors, safeCredentialsForm } from '@utils/fetchHelper';
 import { Modal, Button } from 'react-bootstrap';
 
 import './property.scss';
@@ -14,6 +14,7 @@ class Property extends React.Component {
     loading: true,
     showModal: false,
     previewImage: null,
+    changedFields: []
   };
 
   componentDidMount() {
@@ -46,6 +47,7 @@ class Property extends React.Component {
           image: e.target.files[0],
         },
         previewImage: URL.createObjectURL(e.target.files[0]),
+        changedFields: [...prevState.changedFields, name],
       }));
     } else {
       this.setState((prevState) => ({
@@ -53,6 +55,7 @@ class Property extends React.Component {
           ...prevState.property,
           [name]: name === 'price_per_night' ? parseFloat(value) : value,
         },
+        changedFields: [...prevState.changedFields, name],
       }));
     }
   };
@@ -60,27 +63,39 @@ class Property extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();
 
-    var formData = new FormData();
+    const { property, changedFields } = this.state;
+    const formData = new FormData();
 
-    Object.keys(this.state.property).forEach((key) => {
-      if (key === 'image') {
-        formData.set(`property[${key}]`, this.state.property[key], this.state.property[key].name);
-      } else {
-        formData.set(`property[${key}]`, this.state.property[key]);
+    changedFields.forEach((field) => {
+      if(field !== 'user' && field !== 'id') {
+        // if(field === 'image') {
+        //   formData.append(`property[${field}]`, property[field], property[field].name);
+        
+        // }
+
+        formData.append(`property[${field}]`, property[field]);
       }
     });
+
+    // Object.keys(this.state.property).forEach((key) => {
+    //   if (key === 'image') {
+    //     formData.append(`property[${key}]`, this.state.property[key], this.state.property[key].name);
+    //   } else {
+    //     formData.append(`property[${key}]`, this.state.property[key]);
+    //   }
+    // });
 
     fetch(
       `/api/properties/${this.props.property_id}`,
       safeCredentialsForm({
-        method: 'PUT',
+        method: 'PATCH',
         body: formData,
       })
     )
       .then(handleErrors)
       .then((response) => {
         console.log(response);
-        this.setState({ property: response.property, showModal: false });
+        this.setState({ property: response.property, showModal: false, changedFields: [] });
       });
   };
 
