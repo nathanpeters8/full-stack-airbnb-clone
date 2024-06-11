@@ -12,7 +12,8 @@ class Property extends React.Component {
   state = {
     property: {},
     loading: true,
-    showModal: false,
+    showEditModal: false,
+    showDeleteModal: false,
     previewImage: null,
     changedFields: [],
     isAuthenticated: false,
@@ -42,12 +43,20 @@ class Property extends React.Component {
       });
   }
 
-  handleOpenModal = () => {
-    this.setState({ showModal: true });
+  handleOpenEditModal = () => {
+    this.setState({ showEditModal: true });
   };
 
-  handleCloseModal = () => {
-    this.setState({ showModal: false });
+  handleCloseEditModal = () => {
+    this.setState({ showEditModal: false });
+  };
+
+  handleOpenDeleteModal = () => {
+    this.setState({ showDeleteModal: true });
+  };
+
+  handleCloseDeleteModal = () => {
+    this.setState({ showDeleteModal: false });
   };
 
   handleInputChange = (e) => {
@@ -71,6 +80,21 @@ class Property extends React.Component {
         changedFields: [...prevState.changedFields, name],
       }));
     }
+  };
+
+  handleDelete = () => {
+    fetch(
+      `/api/properties/${this.props.property_id}`,
+      safeCredentials({
+        method: 'DELETE',
+      })
+    )
+      .then(handleErrors)
+      .then(() => {
+        this.setState({ showDeleteModal: false }, () => {
+          window.location.href = '/';
+        }); 
+      });
   };
 
   handleSubmit = (e) => {
@@ -101,12 +125,12 @@ class Property extends React.Component {
       .then(handleErrors)
       .then((response) => {
         console.log(response);
-        this.setState({ property: response.property, showModal: false, changedFields: [] });
+        this.setState({ property: response.property, showEditModal: false, changedFields: [] });
       });
   };
 
   render() {
-    const { property, loading, previewImage, currentUser } = this.state;
+    const { property, loading, previewImage, currentUser, changedFields } = this.state;
 
     if (loading) {
       return <p>loading...</p>;
@@ -171,10 +195,10 @@ class Property extends React.Component {
               }
               return (
                 <div className='col-4'>
-                  <button className='btn btn-warning my-1 my-sm-0 mx-1' type='button' onClick={this.handleOpenModal}>
+                  <button className='btn btn-warning my-1 my-sm-0 mx-1' type='button' onClick={this.handleOpenEditModal}>
                     Edit
                   </button>
-                  <button className='btn btn-warning my-1 my-sm-0 mx-1'>Delete</button>
+                  <button className='btn btn-warning my-1 my-sm-0 mx-1' onClick={this.handleOpenDeleteModal}>Delete</button>
                 </div>
               );
             })()}
@@ -183,20 +207,37 @@ class Property extends React.Component {
             </div>
           </div>
         </div>
-        {/* Modal */}
-        <Modal show={this.state.showModal} onHide={this.handleCloseModal} size='lg'>
+        {/* Edit Property Modal */}
+        <Modal show={this.state.showEditModal} onHide={this.handleCloseEditModal} size='lg'>
           <Modal.Header closeButton>
             <Modal.Title>Edit Property</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <PropertyForm property={property} handleInputChange={this.handleInputChange} handleSubmit={this.handleSubmit} formType='edit' previewImage={previewImage} />
+            <PropertyForm property={property} handleInputChange={this.handleInputChange} handleSubmit={this.handleSubmit} formType='edit' previewImage={previewImage} changedFields={changedFields} />
           </Modal.Body>
           <Modal.Footer>
-            <Button variant='secondary' onClick={this.handleCloseModal}>
+            <Button variant='secondary' onClick={this.handleCloseEditModal}>
               Close
             </Button>
             <Button variant='primary' onClick={this.handleSubmit}>
               Save Changes
+            </Button>
+          </Modal.Footer>
+        </Modal>
+        {/* Delete Property Modal */}
+        <Modal show={this.state.showDeleteModal} onHide={this.handleCloseDeleteModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Delete Property</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>Are you sure you want to delete this property?</p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant='secondary' onClick={this.handleCloseDeleteModal}>
+              Close
+            </Button>
+            <Button variant='danger' onClick={this.handleDelete}>
+              Delete
             </Button>
           </Modal.Footer>
         </Modal>

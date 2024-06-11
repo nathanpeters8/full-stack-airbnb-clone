@@ -110,6 +110,7 @@ class HostProperty extends React.Component {
                 property={this.state.property}
                 formType='create'
                 previewImage={this.state.previewImage}
+                changedFields={[]}
               />
             </div>
           </div>
