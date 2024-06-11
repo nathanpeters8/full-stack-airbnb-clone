@@ -33,10 +33,6 @@ module Api
 
       @bookings = user.bookings.where("end_date > ? ", Date.today)
       
-      # if @bookings.empty?
-      #   return render json: { error: 'no bookings found' }, status: :not_found
-      # end
-      
       render 'api/bookings/index'
     end
 
@@ -50,13 +46,9 @@ module Api
       # get all bookings for properties that the user owns
       @bookings = user.properties.map { |property| property.bookings.where("end_date > ?", Date.today) }.flatten
 
-      # if @bookings.empty?
-      #   return render json: { error: 'no bookings found' }, status: :not_found
-      # end
-      
       render 'api/bookings/index'
     end
-
+    
     private
 
     def booking_params

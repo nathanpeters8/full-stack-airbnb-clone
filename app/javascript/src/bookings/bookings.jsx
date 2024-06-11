@@ -27,7 +27,7 @@ class Bookings extends React.Component {
         });
       })
       .then(() => {
-        if(this.state.authenticated) {
+        if (this.state.authenticated) {
           this.showProperties();
         }
       });
@@ -102,7 +102,7 @@ class Bookings extends React.Component {
                           <th>Beds</th>
                           <th>Baths</th>
                         </>
-                        )}
+                      )}
                       <th>Check In - Check Out</th>
                       <th>Paid?</th>
                       <th>Actions</th>
@@ -172,7 +172,7 @@ class Bookings extends React.Component {
                             <td>
                               {booking.start_date} - {booking.end_date}
                             </td>
-                            <td>Yes/No</td>
+                            <td>{booking.paid ? 'Yes' : 'No'}</td>
                             <td>
                               <button className='btn btn-danger'>Cancel</button>
                             </td>
