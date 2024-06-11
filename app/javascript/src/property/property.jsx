@@ -3,7 +3,7 @@ import React from 'react';
 import Layout from '@src/layout';
 import BookingWidget from './bookingWidget';
 import PropertyForm from '../propertyForm';
-import { handleErrors, safeCredentialsForm } from '@utils/fetchHelper';
+import { handleErrors, safeCredentialsForm, safeCredentials } from '@utils/fetchHelper';
 import { Modal, Button } from 'react-bootstrap';
 
 import './property.scss';
@@ -14,7 +14,9 @@ class Property extends React.Component {
     loading: true,
     showModal: false,
     previewImage: null,
-    changedFields: []
+    changedFields: [],
+    isAuthenticated: false,
+    currentUser: null,
   };
 
   componentDidMount() {
@@ -26,6 +28,17 @@ class Property extends React.Component {
           property: data.property,
           loading: false,
         });
+      });
+
+    fetch(
+      '/api/authenticated',
+      safeCredentials({
+        method: 'GET',
+      })
+    )
+      .then(handleErrors)
+      .then((data) => {
+        this.setState({ isAuthenticated: data.authenticated, currentUser: data.username });
       });
   }
 
@@ -63,27 +76,20 @@ class Property extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();
 
-    const { property, changedFields } = this.state;
+    const { property, changedFields, isAuthenticated } = this.state;
     const formData = new FormData();
 
     changedFields.forEach((field) => {
       if(field !== 'user' && field !== 'id') {
-        // if(field === 'image') {
-        //   formData.append(`property[${field}]`, property[field], property[field].name);
+        if(field === 'image') {
+          formData.append(`property[${field}]`, property[field], property[field].name);
         
-        // }
-
-        formData.append(`property[${field}]`, property[field]);
+        }
+        else {
+          formData.append(`property[${field}]`, property[field]);
+        }
       }
     });
-
-    // Object.keys(this.state.property).forEach((key) => {
-    //   if (key === 'image') {
-    //     formData.append(`property[${key}]`, this.state.property[key], this.state.property[key].name);
-    //   } else {
-    //     formData.append(`property[${key}]`, this.state.property[key]);
-    //   }
-    // });
 
     fetch(
       `/api/properties/${this.props.property_id}`,
@@ -100,7 +106,7 @@ class Property extends React.Component {
   };
 
   render() {
-    const { property, loading, previewImage } = this.state;
+    const { property, loading, previewImage, currentUser } = this.state;
 
     if (loading) {
       return <p>loading...</p>;
@@ -159,12 +165,19 @@ class Property extends React.Component {
               <hr />
               <p>{description}</p>
             </div>
-            <div className='col-4'>
-              <button className='btn btn-warning my-1 my-sm-0 mx-1' type='button' onClick={this.handleOpenModal}>
-                Edit
-              </button>
-              <button className='btn btn-warning my-1 my-sm-0 mx-1'>Delete</button>
-            </div>
+            {(() => {
+              if(currentUser !== user.username) {
+                return null;
+              }
+              return (
+                <div className='col-4'>
+                  <button className='btn btn-warning my-1 my-sm-0 mx-1' type='button' onClick={this.handleOpenModal}>
+                    Edit
+                  </button>
+                  <button className='btn btn-warning my-1 my-sm-0 mx-1'>Delete</button>
+                </div>
+              );
+            })()}
             <div className='col-12 col-lg-5'>
               <BookingWidget property_id={id} price_per_night={price_per_night} />
             </div>

@@ -10,5 +10,11 @@ json.properties do
     json.property_type property.property_type
     json.price_per_night property.price_per_night
     json.image url_for(property.image) if property.image.attached?
+
+
+    json.user do
+      json.id property.user.id
+      json.username property.user.username
+    end
   end
 end
