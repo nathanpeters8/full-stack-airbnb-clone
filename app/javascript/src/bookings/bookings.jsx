@@ -10,7 +10,6 @@ class Bookings extends React.Component {
     this.state = {
       bookings: [],
       username: '',
-      paid: false,
       authenticated: false,
       show_booked_properties: true,
       loading: true,
@@ -27,7 +26,7 @@ class Bookings extends React.Component {
         });
       })
       .then(() => {
-        if(this.state.authenticated) {
+        if (this.state.authenticated) {
           this.showProperties();
         }
       });
@@ -45,6 +44,36 @@ class Bookings extends React.Component {
           loading: false,
         });
       });
+  };
+
+  initiateStripeCheckout = (booking_id) => {
+    fetch(
+      `/api/charges?booking_id=${booking_id}&cancel_url=${window.location.pathname}`,
+      safeCredentials({
+        method: 'POST',
+      })
+    )
+      .then(handleErrors)
+      .then((response) => {
+        const stripe = Stripe(`${process.env.STRIPE_PUBLISHABLE_KEY}`);
+
+        stripe
+          .redirectToCheckout({
+            //make id field from checkout session creation API response available to this file
+            sessionId: response.charge.checkout_session_id,
+          })
+          .then((result) => {
+            // if fails due to browser/network error, display error message
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  handlePayment = (e, booking_id) => {
+    e.preventDefault();
+    return this.initiateStripeCheckout(booking_id);
   };
 
   render() {
@@ -102,7 +131,7 @@ class Bookings extends React.Component {
                           <th>Beds</th>
                           <th>Baths</th>
                         </>
-                        )}
+                      )}
                       <th>Check In - Check Out</th>
                       <th>Paid?</th>
                       <th>Actions</th>
@@ -172,7 +201,25 @@ class Bookings extends React.Component {
                             <td>
                               {booking.start_date} - {booking.end_date}
                             </td>
-                            <td>Yes/No</td>
+                            {(() => {
+                              if (!show_booked_properties) {
+                                return <td>{booking.paid ? 'Yes' : 'No'}</td>;
+                              }
+                              return (
+                                <td>
+                                  {booking.paid ? (
+                                    'Yes'
+                                  ) : (
+                                    <div className='d-flex flex-column align-items-center'>
+                                      <small className=''>No</small>
+                                      <button className='btn btn-sm btn-warning mt-1' onClick={(e) => this.handlePayment(e, booking.id)}>
+                                        <small>Finish Payment</small>
+                                      </button>
+                                    </div>
+                                  )}
+                                </td>
+                              );
+                            })()}
                             <td>
                               <button className='btn btn-danger'>Cancel</button>
                             </td>
