@@ -5,13 +5,14 @@ Rails.application.routes.draw do
   get '/login' => 'static_pages#login'
   get '/host_property' => 'static_pages#host_property'
   get '/bookings' => 'static_pages#bookings'
+  get '/booking/:id/success' => 'static_pages#success'
 
   namespace :api do
     # Add routes below this line
     resources :users, only: [:create]
     resources :sessions, only: %i[create]
     resources :properties, only: [:index, :show, :create, :update, :destroy]
-    resources :bookings, only: [:create]
+    resources :bookings, only: [:show, :create]
     resources :charges, only: [:create]
 
     delete '/logout' => 'sessions#destroy'
