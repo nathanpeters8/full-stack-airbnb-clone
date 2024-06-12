@@ -18,6 +18,7 @@ class Property extends React.Component {
     changedFields: [],
     isAuthenticated: false,
     currentUser: null,
+    currentImageIndex: 0,
   };
 
   componentDidMount() {
@@ -61,6 +62,16 @@ class Property extends React.Component {
     this.setState({ showDeleteModal: false });
   };
 
+  nextImage = () => {
+    const { property, currentImageIndex } = this.state;
+    this.setState({ currentImageIndex: (currentImageIndex + 1) % property.images.length });
+  };
+
+  prevImage = () => {
+    const { property, currentImageIndex } = this.state;
+    this.setState({ currentImageIndex: (currentImageIndex - 1 + property.images.length) % property.images.length });
+  };
+
   handleInputChange = (e) => {
     const { name, value, type } = e.target;
 
@@ -95,7 +106,7 @@ class Property extends React.Component {
       .then(() => {
         this.setState({ showDeleteModal: false }, () => {
           window.location.href = '/';
-        }); 
+        });
       });
   };
 
@@ -106,14 +117,12 @@ class Property extends React.Component {
     const formData = new FormData();
 
     changedFields.forEach((field) => {
-      if(field !== 'user' && field !== 'id') {
-        if(field === 'images') {
+      if (field !== 'user' && field !== 'id') {
+        if (field === 'images') {
           for (let i = 0; i < property[field].length; i++) {
             formData.append(`property[${field}][]`, property[field][i]);
           }
-        
-        }
-        else {
+        } else {
           formData.append(`property[${field}]`, property[field]);
         }
       }
@@ -134,7 +143,7 @@ class Property extends React.Component {
   };
 
   render() {
-    const { property, loading, previewImage, currentUser, changedFields } = this.state;
+    const { property, loading, previewImage, currentUser, changedFields, currentImageIndex } = this.state;
 
     if (loading) {
       return <p>loading...</p>;
@@ -156,15 +165,26 @@ class Property extends React.Component {
       user,
     } = property;
 
-    const currentImage = images.length > 0
-      ? images[0].url
-      : `https://cdn.altcademy.com/assets/images/medium/airbnb_clone/${property.id - 1}.jpg`;
+    const currentImage =
+      images.length > 0
+        ? images[currentImageIndex].url
+        : `https://cdn.altcademy.com/assets/images/medium/airbnb_clone/${property.id - 1}.jpg`;
 
     return (
       <Layout>
-        <div className='property-image mb-3' style={{ backgroundImage: `url(${currentImage})` }} />
         <div className='container'>
           <div className='row'>
+            <div
+              className='col-12 property-image mb-3 d-flex align-items-center justify-content-between'
+              style={{ backgroundImage: `url(${currentImage})` }}
+            >
+              <button className={`btn btn-danger ${images.length < 2 ? 'd-none' : ''}`} onClick={this.prevImage}>
+                Previous
+              </button>
+              <button className={`btn btn-danger ${images.length < 2 ? 'd-none' : ''}`} onClick={this.nextImage}>
+                Next
+              </button>
+            </div>
             <div className='info col-8'>
               <div className='mb-3'>
                 <h3 className='mb-0'>{title}</h3>
@@ -194,15 +214,21 @@ class Property extends React.Component {
               <p>{description}</p>
             </div>
             {(() => {
-              if(currentUser !== user.username) {
+              if (currentUser !== user.username) {
                 return null;
               }
               return (
                 <div className='col-4'>
-                  <button className='btn btn-warning my-1 my-sm-0 mx-1' type='button' onClick={this.handleOpenEditModal}>
+                  <button
+                    className='btn btn-warning my-1 my-sm-0 mx-1'
+                    type='button'
+                    onClick={this.handleOpenEditModal}
+                  >
                     Edit
                   </button>
-                  <button className='btn btn-warning my-1 my-sm-0 mx-1' onClick={this.handleOpenDeleteModal}>Delete</button>
+                  <button className='btn btn-warning my-1 my-sm-0 mx-1' onClick={this.handleOpenDeleteModal}>
+                    Delete
+                  </button>
                 </div>
               );
             })()}
@@ -217,7 +243,14 @@ class Property extends React.Component {
             <Modal.Title>Edit Property</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <PropertyForm property={property} handleInputChange={this.handleInputChange} handleSubmit={this.handleSubmit} formType='edit' previewImage={previewImage} changedFields={changedFields} />
+            <PropertyForm
+              property={property}
+              handleInputChange={this.handleInputChange}
+              handleSubmit={this.handleSubmit}
+              formType='edit'
+              previewImage={previewImage}
+              changedFields={changedFields}
+            />
           </Modal.Body>
           <Modal.Footer>
             <Button variant='secondary' onClick={this.handleCloseEditModal}>
