@@ -2,6 +2,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, previewImage, changedFields }) => {
+
+  const getImagePreviews = () => {
+    if ((property.images.length === 0 && formType === 'create')) {
+      return null;
+    }
+
+    let imagesArray = Array.from(property.images);
+    return imagesArray.map((image, i) => {
+      return formType === 'create' || changedFields.includes('images') ? URL.createObjectURL(image) : image.url;
+    });
+  };
+
   return (
     <form className='row g-2 d-flex justify-content-center' onSubmit={handleSubmit}>
       <div className='col-10'>
@@ -117,7 +129,13 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
           <label htmlFor='inputRooms' className='form-label'>
             Beds
           </label>
-          <select className={`form-select ${changedFields.includes('beds') ? 'bg-warning' : ''}`} name='beds' id='inputBeds' onChange={handleInputChange} value={property.beds}>
+          <select
+            className={`form-select ${changedFields.includes('beds') ? 'bg-warning' : ''}`}
+            name='beds'
+            id='inputBeds'
+            onChange={handleInputChange}
+            value={property.beds}
+          >
             <option value={1} defaultValue>
               1
             </option>
@@ -150,25 +168,39 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
           </select>
         </div>
       </div>
-      <div className='col-8 mt-4 d-flex justify-content-center'>
-        {(property.images.length > 0 || previewImage) && (
-          <>
-            <div
-              className='property-image mb-1 rounded me-1'
-              style={{
-                backgroundImage: `url(${previewImage || property.images[0].url})`,
-                width: `${formType === 'create' ? '400px' : '250px'}`,
-                height: `${formType === 'create' ? '300px' : '150px'}`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center center',
-                backgroundRepeat: 'no-repeat',
-              }}
-            />
-          </>
-        )}
+      <div className='col-10 mt-4 d-flex justify-content-center gap-2'>
+        {(() => {
+          let imgs = getImagePreviews();
+          if (imgs === null) {
+            return null;
+          }
+          return imgs.map((img, index) => {
+            return (
+              <div
+                key={index}
+                className='property-image mb-1 rounded me-1'
+                style={{
+                  backgroundImage: `url(${img})`,
+                  width: `${formType === 'create' ? '400px' : '250px'}`,
+                  height: `${formType === 'create' ? '300px' : '150px'}`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center center',
+                  backgroundRepeat: 'no-repeat',
+                }}
+              />
+            );
+          });
+        })()}
       </div>
       <div className='col-10 mt-4'>
-        <input type='file' name='images' accept='image/*' className={`form-control ${changedFields.includes('images') ? 'bg-warning' : ''}`} onChange={handleInputChange} multiple/>
+        <input
+          type='file'
+          name='images'
+          accept='image/*'
+          className={`form-control ${changedFields.includes('images') ? 'bg-warning' : ''}`}
+          onChange={handleInputChange}
+          multiple
+        />
       </div>
       <div className={`col-6 text-center my-4 ${formType === 'edit' ? 'd-none' : ''}`}>
         <button type='submit' className='btn btn-warning'>

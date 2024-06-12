@@ -48,7 +48,7 @@ class HostProperty extends React.Component {
           images: e.target.files,
         }, 
         previewImage: URL.createObjectURL(e.target.files[0]),
-      }), () => console.log(this.state.property.images));
+      }));
     } else {
       this.setState(prevState => ({
         property: {
