@@ -25,6 +25,10 @@ json.booking do
       json.beds @booking.property.beds
       json.baths @booking.property.baths
       json.username @booking.property.user.username
-      json.image url_for(@booking.property.image) if @booking.property.image.attached?
+      json.images do
+        json.array! @booking.property.images do |image|
+          json.url url_for(image) if @booking.property.images.attached?
+        end
+      end
     end
 end

@@ -63,7 +63,7 @@ class BookingWidget extends React.Component {
       .then(handleErrors)
       .then((response) => {
         console.log(response);
-        return this.initiateStripeCheckout(response.booking.id)
+        return this.initiateStripeCheckout(response.booking.id);
       })
       .catch((error) => {
         console.log(error);
@@ -99,8 +99,11 @@ class BookingWidget extends React.Component {
 
   onFocusChange = (focusedInput) => this.setState({ focusedInput });
 
-  isDayBlocked = (day) =>
+  isCheckInDayBlocked = (day) =>
     this.state.existingBookings.filter((b) => day.isBetween(b.start_date, b.end_date, 'day', '[)')).length > 0;
+
+  isCheckOutDayBlocked = (day) =>
+    this.state.existingBookings.filter((b) => day.isBetween(b.start_date, b.end_date, 'day', '(]')).length > 0;
 
   render() {
     const { authenticated, startDate, endDate, focusedInput } = this.state;
@@ -136,7 +139,7 @@ class BookingWidget extends React.Component {
               onDatesChange={this.onDatesChange}
               focusedInput={focusedInput}
               onFocusChange={this.onFocusChange}
-              isDayBlocked={this.isDayBlocked}
+              isDayBlocked={focusedInput === 'startDate' ? this.isCheckInDayBlocked : this.isCheckOutDayBlocked}
               numberOfMonths={1}
             />
           </div>
