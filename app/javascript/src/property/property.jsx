@@ -21,7 +21,6 @@ class Property extends React.Component {
   };
 
   componentDidMount() {
-    console.log(this.props.property_id);
     fetch(`/api/properties/${this.props.property_id}`)
       .then(handleErrors)
       .then((data) => {
@@ -29,6 +28,9 @@ class Property extends React.Component {
           property: data.property,
           loading: false,
         });
+      })
+      .then(() => {
+        console.log(this.state.property);
       });
 
     fetch(
@@ -66,7 +68,7 @@ class Property extends React.Component {
       this.setState((prevState) => ({
         property: {
           ...prevState.property,
-          image: e.target.files[0],
+          images: e.target.files,
         },
         previewImage: URL.createObjectURL(e.target.files[0]),
         changedFields: [...prevState.changedFields, name],
@@ -105,8 +107,10 @@ class Property extends React.Component {
 
     changedFields.forEach((field) => {
       if(field !== 'user' && field !== 'id') {
-        if(field === 'image') {
-          formData.append(`property[${field}]`, property[field], property[field].name);
+        if(field === 'images') {
+          for (let i = 0; i < property[field].length; i++) {
+            formData.append(`property[${field}][]`, property[field][i]);
+          }
         
         }
         else {
@@ -148,12 +152,12 @@ class Property extends React.Component {
       bedrooms,
       beds,
       baths,
-      image,
+      images,
       user,
     } = property;
 
-    const currentImage = image
-      ? image
+    const currentImage = images.length > 0
+      ? images[0].url
       : `https://cdn.altcademy.com/assets/images/medium/airbnb_clone/${property.id - 1}.jpg`;
 
     return (

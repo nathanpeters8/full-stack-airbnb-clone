@@ -20,7 +20,7 @@ class HostProperty extends React.Component {
         bedrooms: 1,
         beds: 1,
         baths: 1,
-        image: null,
+        images: [],
       },
       authenticated: false,
       loading: true,
@@ -41,15 +41,14 @@ class HostProperty extends React.Component {
 
   handleInputChange = (e) => {
     const { name, value, type } = e.target;
-
     if (type === 'file') {
       this.setState(prevState => ({
         property: {
           ...prevState.property,
-          image: e.target.files[0],
+          images: e.target.files,
         }, 
         previewImage: URL.createObjectURL(e.target.files[0]),
-      }));
+      }), () => console.log(this.state.property.images));
     } else {
       this.setState(prevState => ({
         property: {
@@ -66,8 +65,10 @@ class HostProperty extends React.Component {
     var formData = new FormData();
 
     Object.keys(this.state.property).forEach((key) => {
-      if (key === 'image') {
-        formData.set(`property[${key}]`, this.state.property[key], this.state.property[key].name);
+      if (key === 'images') {
+        for (let i = 0; i < this.state.property[key].length; i++){
+          formData.append(`property[${key}][]`, this.state.property[key][i]);
+        }
       } else {
         formData.set(`property[${key}]`, this.state.property[key]);
       }

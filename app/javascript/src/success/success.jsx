@@ -36,8 +36,8 @@ const Success = ({ booking_id }) => {
           </div>
           <div className='col-10 d-flex flex-column justify-content-center mt-5 mb-2'>
             {(() => {
-              let image = booking.property.image
-                ? booking.property.image
+              let image = booking.property.images[0]
+                ? booking.property.images[0].url
                 : `https://cdn.altcademy.com/assets/images/medium/airbnb_clone/${booking.property.property_id - 1}.jpg`;
 
               console.log(image);

@@ -154,8 +154,8 @@ class Bookings extends React.Component {
                         );
                       }
                       return bookings.map((booking) => {
-                        let image = booking.property.image
-                          ? booking.property.image
+                        let image = booking.property.images[0]
+                          ? booking.property.images[0].url
                           : `https://cdn.altcademy.com/assets/images/medium/airbnb_clone/${
                               booking.property.property_id - 1
                             }.jpg`;

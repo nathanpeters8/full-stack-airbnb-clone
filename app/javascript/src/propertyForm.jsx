@@ -151,12 +151,12 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
         </div>
       </div>
       <div className='col-8 mt-4 d-flex justify-content-center'>
-        {(property.image || previewImage) && (
+        {(property.images.length > 0 || previewImage) && (
           <>
             <div
               className='property-image mb-1 rounded me-1'
               style={{
-                backgroundImage: `url(${previewImage || property.image})`,
+                backgroundImage: `url(${previewImage || property.images[0].url})`,
                 width: `${formType === 'create' ? '400px' : '250px'}`,
                 height: `${formType === 'create' ? '300px' : '150px'}`,
                 backgroundSize: 'cover',
@@ -168,7 +168,7 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
         )}
       </div>
       <div className='col-10 mt-4'>
-        <input type='file' name='image' accept='image/*' className={`form-control ${changedFields.includes('image') ? 'bg-warning' : ''}`} onChange={handleInputChange} />
+        <input type='file' name='images' accept='image/*' className={`form-control ${changedFields.includes('images') ? 'bg-warning' : ''}`} onChange={handleInputChange} multiple/>
       </div>
       <div className={`col-6 text-center my-4 ${formType === 'edit' ? 'd-none' : ''}`}>
         <button type='submit' className='btn btn-warning'>
