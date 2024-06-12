@@ -22,7 +22,7 @@ class Home extends React.Component {
           total_pages: data.total_pages,
           next_page: data.next_page,
           loading: false,
-        }, () => console.log(this.state))
+        })
       })
   }
 

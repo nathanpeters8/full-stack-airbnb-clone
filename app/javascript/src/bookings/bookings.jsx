@@ -38,7 +38,6 @@ class Bookings extends React.Component {
     fetch(`/api/users/${this.state.username}/${endpoint}`)
       .then(handleErrors)
       .then((data) => {
-        console.log(data);
         this.setState({
           bookings: data.bookings,
           loading: false,

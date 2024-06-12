@@ -29,9 +29,6 @@ class Property extends React.Component {
           property: data.property,
           loading: false,
         });
-      })
-      .then(() => {
-        console.log(this.state.property);
       });
 
     fetch(
@@ -51,7 +48,11 @@ class Property extends React.Component {
   };
 
   handleCloseEditModal = () => {
-    this.setState({ showEditModal: false });
+    this.setState({ showEditModal: false }, () => {
+      this.setState({ changedFields: [] }, () => {
+        window.location.reload();
+      });
+    });
   };
 
   handleOpenDeleteModal = () => {
@@ -250,6 +251,7 @@ class Property extends React.Component {
               formType='edit'
               previewImage={previewImage}
               changedFields={changedFields}
+              completeForm={true}
             />
           </Modal.Body>
           <Modal.Footer>

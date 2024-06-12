@@ -16,7 +16,6 @@ const Success = ({ booking_id }) => {
     )
       .then(handleErrors)
       .then((response) => {
-        console.log(response.booking.charges);
         setBooking(response.booking);
         setLoading(false);
       });
@@ -40,7 +39,6 @@ const Success = ({ booking_id }) => {
                 ? booking.property.images[0].url
                 : `https://cdn.altcademy.com/assets/images/medium/airbnb_clone/${booking.property.property_id - 1}.jpg`;
 
-              console.log(image);
               return <div className='property-image mb-1 rounded' style={{ backgroundImage: `url(${image})` }} />;
             })()}
             <div className='card'>

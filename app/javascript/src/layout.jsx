@@ -29,7 +29,6 @@ const Layout = (props) => {
     )
       .then(handleErrors)
       .then((response) => {
-        console.log(response);
         setLoggedIn(false);
         window.location.href = '/';
       });

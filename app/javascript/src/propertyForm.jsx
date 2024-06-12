@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, previewImage, changedFields }) => {
+const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, previewImage, changedFields, completeForm }) => {
 
   const getImagePreviews = () => {
     if ((property.images.length === 0 && formType === 'create')) {
@@ -16,31 +16,43 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
 
   return (
     <form className='row g-2 d-flex justify-content-center' onSubmit={handleSubmit}>
-      <div className='col-10'>
+      <div className='col-10 text-center mb-2'>
+        <label htmlFor='inputTitle' className='form-label'>
+          Property Title
+        </label>
         <input
+          id='inputTitle'
           type='text'
           name='title'
-          placeholder='Property Title'
-          className={`form-control text-center ${changedFields.includes('title') ? 'bg-warning' : ''}`}
+          placeholder=''
+          className={`form-control text-center bg-light ${changedFields.includes('title') ? 'bg-warning' : ''}`}
           onChange={handleInputChange}
           value={property.title}
         />
       </div>
-      <div className='col-10'>
+      <div className='col-10 text-center mb-2'>
+        <label htmlFor='inputDescription' className='form-label'>
+          Description
+        </label>
         <textarea
+          id='inputDescription'
           name='description'
-          className={`form-control text-center ${changedFields.includes('description') ? 'bg-warning' : ''}`}
-          placeholder='Description'
+          className={`form-control text-center bg-light ${changedFields.includes('description') ? 'bg-warning' : ''}`}
+          placeholder=''
           onChange={handleInputChange}
           value={property.description}
         ></textarea>
       </div>
-      <div className='col-10'>
+      <div className='col-10 text-center mb-2'>
+        <label htmlFor='inputType' className='form-label'>
+          Property Type
+        </label>
         <input
+          id='inputType'
           type='text'
           name='property_type'
-          placeholder='Property Type'
-          className={`form-control text-center ${changedFields.includes('property_type') ? 'bg-warning' : ''}`}
+          placeholder=''
+          className={`form-control text-center bg-light ${changedFields.includes('property_type') ? 'bg-warning' : ''}`}
           onChange={handleInputChange}
           value={property.property_type}
         />
@@ -51,7 +63,7 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
             type='text'
             name='city'
             placeholder='City'
-            className={`form-control text-center ${changedFields.includes('city') ? 'bg-warning' : ''}`}
+            className={`form-control text-center bg-light ${changedFields.includes('city') ? 'bg-warning' : ''}`}
             onChange={handleInputChange}
             value={property.city}
           />
@@ -61,7 +73,7 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
             type='text'
             name='country'
             placeholder='Country'
-            className={`form-control text-center ${changedFields.includes('country') ? 'bg-warning' : ''}`}
+            className={`form-control text-center bg-light ${changedFields.includes('country') ? 'bg-warning' : ''}`}
             onChange={handleInputChange}
             value={property.country}
           />
@@ -76,7 +88,7 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
             type='number'
             name='price_per_night'
             placeholder='$'
-            className={`form-control text-center ${changedFields.includes('price_per_night') ? 'bg-warning' : ''}`}
+            className={`form-control text-center bg-light ${changedFields.includes('price_per_night') ? 'bg-warning' : ''}`}
             onChange={handleInputChange}
             value={property.price_per_night}
           />
@@ -86,7 +98,7 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
             Max Guests
           </label>
           <select
-            className={`form-select ${changedFields.includes('max_guests') ? 'bg-warning' : ''}`}
+            className={`form-select bg-light ${changedFields.includes('max_guests') ? 'bg-warning' : ''}`}
             name='max_guests'
             id='inputGuests'
             onChange={handleInputChange}
@@ -109,7 +121,7 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
             Rooms
           </label>
           <select
-            className={`form-select ${changedFields.includes('bedrooms') ? 'bg-warning' : ''}`}
+            className={`form-select bg-light ${changedFields.includes('bedrooms') ? 'bg-warning' : ''}`}
             name='bedrooms'
             id='inputRooms'
             onChange={handleInputChange}
@@ -130,7 +142,7 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
             Beds
           </label>
           <select
-            className={`form-select ${changedFields.includes('beds') ? 'bg-warning' : ''}`}
+            className={`form-select bg-light ${changedFields.includes('beds') ? 'bg-warning' : ''}`}
             name='beds'
             id='inputBeds'
             onChange={handleInputChange}
@@ -151,7 +163,7 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
             Baths
           </label>
           <select
-            className={`form-select ${changedFields.includes('baths') ? 'bg-warning' : ''}`}
+            className={`form-select bg-light ${changedFields.includes('baths') ? 'bg-warning' : ''}`}
             name='baths'
             id='inputBaths'
             onChange={handleInputChange}
@@ -197,13 +209,13 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
           type='file'
           name='images'
           accept='image/*'
-          className={`form-control ${changedFields.includes('images') ? 'bg-warning' : ''}`}
+          className={`form-control bg-light ${changedFields.includes('images') ? 'bg-warning' : ''}`}
           onChange={handleInputChange}
           multiple
         />
       </div>
       <div className={`col-6 text-center my-4 ${formType === 'edit' ? 'd-none' : ''}`}>
-        <button type='submit' className='btn btn-warning'>
+        <button type='submit' className={`btn btn-warning ${!completeForm && formType === 'create' ? 'disabled' : ''}`}>
           Host Property
         </button>
       </div>
