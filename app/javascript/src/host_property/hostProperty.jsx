@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '@src/layout';
-import { safeCredentials, handleErrors, safeCredentialsForm } from '@utils/fetchHelper';
+import { handleErrors, safeCredentialsForm } from '@utils/fetchHelper';
 import PropertyForm from '../propertyForm';
 
 import './hostProperty.scss';
@@ -45,21 +45,27 @@ class HostProperty extends React.Component {
     const { name, value, type } = e.target;
     // handle image input
     if (type === 'file') {
-      this.setState((prevState) => ({
-        property: {
-          ...prevState.property,
-          images: e.target.files,
-        },
-        previewImage: URL.createObjectURL(e.target.files[0]),
-      }), () => this.checkFormCompletion());
+      this.setState(
+        (prevState) => ({
+          property: {
+            ...prevState.property,
+            images: e.target.files,
+          },
+          previewImage: URL.createObjectURL(e.target.files[0]),
+        }),
+        () => this.checkFormCompletion()
+      );
     } else {
       // handle text/number input
-      this.setState((prevState) => ({
-        property: {
-          ...prevState.property,
-          [name]: name === 'price_per_night' ? parseFloat(value) : value,
-        },
-      }), () => this.checkFormCompletion());
+      this.setState(
+        (prevState) => ({
+          property: {
+            ...prevState.property,
+            [name]: name === 'price_per_night' ? parseFloat(value) : value,
+          },
+        }),
+        () => this.checkFormCompletion()
+      );
     }
   };
 
@@ -68,7 +74,7 @@ class HostProperty extends React.Component {
     const { property } = this.state;
     const completeForm = Object.values(property).every((value) => value !== '' && value !== 0 && value.length !== 0);
     this.setState({ completeForm });
-  }
+  };
 
   // handle create form submission
   handleSubmit = (e) => {

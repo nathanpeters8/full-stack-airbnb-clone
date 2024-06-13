@@ -69,7 +69,9 @@ const Success = ({ booking_id }) => {
                 <h5 className='card-text'>
                   <u className='lead'>Total Cost</u>:{' '}
                   <span className='fst-normal'>${parseInt(booking.charges[0].amount)}.00</span>{' '}
-                  <span><small>(${booking.property.price_per_night}/day)</small></span>
+                  <span>
+                    <small>(${booking.property.price_per_night}/day)</small>
+                  </span>
                 </h5>
                 <hr />
                 <h5 className='card-text'>

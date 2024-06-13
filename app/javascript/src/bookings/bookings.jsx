@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '@src/layout';
-import { safeCredentials, handleErrors, safeCredentialsForm } from '@utils/fetchHelper';
+import { safeCredentials, handleErrors } from '@utils/fetchHelper';
 
 import './bookings.scss';
 
@@ -33,7 +33,7 @@ class Bookings extends React.Component {
         }
       });
   }
-  
+
   // Fetch bookings data
   showProperties = () => {
     let endpoint = this.state.show_booked_properties ? 'bookings' : 'property_bookings';
@@ -213,7 +213,9 @@ class Bookings extends React.Component {
                             )}
                             {/* Check In and Check Out Dates */}
                             <td>
-                              {booking.start_date} - {booking.end_date}
+                              <span>{booking.start_date}</span>
+                              <span className='fs-4'> - </span>
+                              <span>{booking.end_date}</span>
                             </td>
                             {/* Payment status */}
                             {(() => {
@@ -227,7 +229,10 @@ class Bookings extends React.Component {
                                   ) : (
                                     <div className='d-flex flex-column align-items-center'>
                                       <small className=''>No</small>
-                                      <button className='btn btn-sm btn-warning mt-1' onClick={(e) => this.handlePayment(e, booking.id)}>
+                                      <button
+                                        className='btn btn-sm btn-warning mt-1'
+                                        onClick={(e) => this.handlePayment(e, booking.id)}
+                                      >
                                         <small>Finish Payment</small>
                                       </button>
                                     </div>

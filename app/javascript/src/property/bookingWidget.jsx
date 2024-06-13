@@ -19,7 +19,6 @@ class BookingWidget extends React.Component {
       error: false,
     };
   }
-    
 
   componentDidMount() {
     // Check if user is authenticated

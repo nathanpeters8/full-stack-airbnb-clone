@@ -1,12 +1,18 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 
-const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, previewImage, changedFields, completeForm }) => {
-
+const PropertyForm = ({
+  handleInputChange,
+  handleSubmit,
+  property,
+  formType,
+  previewImage,
+  changedFields,
+  completeForm,
+}) => {
   // Get image previews
   const getImagePreviews = () => {
     // If no images and formType is create, return null
-    if ((property.images.length === 0 && formType === 'create')) {
+    if (property.images.length === 0 && formType === 'create') {
       return null;
     }
 
@@ -97,7 +103,9 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
             type='number'
             name='price_per_night'
             placeholder='$'
-            className={`form-control text-center bg-light ${changedFields.includes('price_per_night') ? 'bg-warning' : ''}`}
+            className={`form-control text-center bg-light ${
+              changedFields.includes('price_per_night') ? 'bg-warning' : ''
+            }`}
             onChange={handleInputChange}
             value={property.price_per_night}
           />

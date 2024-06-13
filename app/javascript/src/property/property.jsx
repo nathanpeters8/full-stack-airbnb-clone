@@ -148,6 +148,8 @@ class Property extends React.Component {
       }
     });
 
+    this.setState({ loading: true });
+
     // Update property with new data
     fetch(
       `/api/properties/${this.props.property_id}`,
@@ -159,7 +161,7 @@ class Property extends React.Component {
       .then(handleErrors)
       .then((response) => {
         console.log(response);
-        this.setState({ property: response.property, showEditModal: false, changedFields: [] });
+        this.setState({ property: response.property, showEditModal: false, changedFields: [], loading: false}, () => window.location.reload());
       });
   };
 
