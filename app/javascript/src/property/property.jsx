@@ -5,6 +5,8 @@ import BookingWidget from './bookingWidget';
 import PropertyForm from '../propertyForm';
 import { handleErrors, safeCredentialsForm, safeCredentials } from '@utils/fetchHelper';
 import { Modal, Button } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 import './property.scss';
 
@@ -179,11 +181,11 @@ class Property extends React.Component {
               className='col-12 property-image mb-3 d-flex align-items-center justify-content-between'
               style={{ backgroundImage: `url(${currentImage})` }}
             >
-              <button className={`btn btn-danger ${images.length < 2 ? 'd-none' : ''}`} onClick={this.prevImage}>
-                Previous
+              <button className={`btn btn-danger btn-lg ${images.length < 2 ? 'd-none' : ''}`} onClick={this.prevImage}>
+                <FontAwesomeIcon icon={faChevronLeft}/>
               </button>
-              <button className={`btn btn-danger ${images.length < 2 ? 'd-none' : ''}`} onClick={this.nextImage}>
-                Next
+              <button className={`btn btn-danger btn-lg ${images.length < 2 ? 'd-none' : ''}`} onClick={this.nextImage}>
+                <FontAwesomeIcon icon={faChevronRight}/>
               </button>
             </div>
             <div className='info col-8'>
