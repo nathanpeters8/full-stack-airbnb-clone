@@ -27,7 +27,7 @@ properties = Property.create!([
     bedrooms: 0,
     beds: 1,
     baths: 1,
-    image: nil,
+    images: [],
     user: users.first
   },{
     title: 'Bright & Airy in Highland Park',
@@ -40,7 +40,7 @@ properties = Property.create!([
     bedrooms: 3,
     beds: 2,
     baths: 1,
-    image: nil,
+    images: [],
     user: users.first
   },{
     title: 'Sunny, Modern room in East Village',
@@ -53,7 +53,7 @@ properties = Property.create!([
     bedrooms: 1,
     beds: 1,
     baths: 0,
-    image: nil,
+    images: [],
     user: users.first
   },{
     title: 'A Beautiful Brownstone Apartment',
@@ -66,7 +66,7 @@ properties = Property.create!([
     bedrooms: 0,
     beds: 3,
     baths: 1,
-    image: nil,
+    images: [],
     user: users.second
   },{
     title: 'Private! entire studio, own entrance, private bath',
@@ -79,7 +79,7 @@ properties = Property.create!([
     bedrooms: 1,
     beds: 1,
     baths: 1,
-    image: nil,
+    images: [],
     user: users.second
   },{
     title: 'Penthouse Studio East 50s Terrace',
@@ -92,7 +92,7 @@ properties = Property.create!([
     bedrooms: 0,
     beds: 1,
     baths: 1,
-    image: nil,
+    images: [],
     user: users.second
   },{
     title: 'The Webster',
@@ -105,7 +105,7 @@ properties = Property.create!([
     bedrooms: 2,
     beds: 3,
     baths: 1,
-    image: nil,
+    images: [],
     user: users.third
   },{
     title: 'Cute Quirky Garden apt',
@@ -118,7 +118,7 @@ properties = Property.create!([
     bedrooms: 1,
     beds: 2,
     baths: 1,
-    image: nil,
+    images: [],
     user: users.third
   },{
     title: 'Sun-drenched 1BD',
@@ -131,7 +131,7 @@ properties = Property.create!([
     bedrooms: 1,
     beds: 1,
     baths: 1,
-    image: nil,
+    images: [],
     user: users.third
   },{
     title: 'Soho 2 Bedroom Private Terrace',
@@ -144,7 +144,7 @@ properties = Property.create!([
     bedrooms: 2,
     beds: 2,
     baths: 2,
-    image: nil,
+    images: [],
     user: users.fourth
   },{
     title: 'Private Studio Apartment in Harlem',
@@ -157,7 +157,7 @@ properties = Property.create!([
     bedrooms: 0,
     beds: 1,
     baths: 1,
-    image: nil,
+    images: [],
     user: users.fourth
   },{
     title: 'LARGE SUNNY ROOM',
@@ -170,7 +170,7 @@ properties = Property.create!([
     bedrooms: 1,
     beds: 1,
     baths: 1,
-    image: nil,
+    images: [],
     user: users.fourth
   },{
     title: 'LARGE SUNNY ROOM',
@@ -183,7 +183,7 @@ properties = Property.create!([
     bedrooms: 1,
     beds: 1,
     baths: 1,
-    image: nil,
+    images: [],
     user: users.fifth
   },{
     title: 'Cozy Bright Room',
@@ -196,7 +196,7 @@ properties = Property.create!([
     bedrooms: 1,
     beds: 1,
     baths: 1,
-    image: nil,
+    images: [],
     user: users.fifth
   },{
     title: 'Enjoy great views of the City in our Deluxe Room!',
@@ -209,7 +209,7 @@ properties = Property.create!([
     bedrooms: 1,
     beds: 1,
     baths: 1,
-    image: nil,
+    images: [],
     user: users.fifth
   },{
     title: 'A Unique studio apartment',
@@ -222,7 +222,7 @@ properties = Property.create!([
     bedrooms: 1,
     beds: 3,
     baths: 1,
-    image: nil,
+    images: [],
     user: users.last
   },{
     title: 'Brooklyn Chill & Explore',
@@ -235,7 +235,7 @@ properties = Property.create!([
     bedrooms: 1,
     beds: 1,
     baths: 1,
-    image: nil,
+    images: [],
     user: users.last
   },{
     title: 'Luxe 1-Bedroom Flat Near Manhattan',
@@ -248,7 +248,7 @@ properties = Property.create!([
     bedrooms: 1,
     beds: 2,
     baths: 1,
-    image: nil,
+    images: [],
     user: users.last
   }
 ])

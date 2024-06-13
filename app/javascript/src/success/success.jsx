@@ -3,10 +3,12 @@ import Layout from '@src/layout';
 import { safeCredentials, handleErrors } from '@utils/fetchHelper';
 import './success.scss';
 
+// Success component
 const Success = ({ booking_id }) => {
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Fetch booking data on mount
   useEffect(() => {
     fetch(
       `/api/bookings/${booking_id}`,
@@ -16,7 +18,6 @@ const Success = ({ booking_id }) => {
     )
       .then(handleErrors)
       .then((response) => {
-        console.log(response.booking.charges);
         setBooking(response.booking);
         setLoading(false);
       });
@@ -34,15 +35,16 @@ const Success = ({ booking_id }) => {
             <h2>{`Thank You ${booking.user.username}!`}</h2>
             <h4 className='text-center'>{`Your payment for "${booking.property.title}" is processing. Please review and save all the following information about your booking.`}</h4>
           </div>
+          {/* Property image */}
           <div className='col-10 d-flex flex-column justify-content-center mt-5 mb-2'>
             {(() => {
               let image = booking.property.images[0]
                 ? booking.property.images[0].url
                 : `https://cdn.altcademy.com/assets/images/medium/airbnb_clone/${booking.property.property_id - 1}.jpg`;
 
-              console.log(image);
               return <div className='property-image mb-1 rounded' style={{ backgroundImage: `url(${image})` }} />;
             })()}
+            {/* Property details */}
             <div className='card'>
               <div className='card-body'>
                 <h5 className='card-text'>
@@ -66,7 +68,10 @@ const Success = ({ booking_id }) => {
                 </h5>
                 <h5 className='card-text'>
                   <u className='lead'>Total Cost</u>:{' '}
-                  <span className='fst-normal'>${parseInt(booking.charges[0].amount)}.00</span>
+                  <span className='fst-normal'>${parseInt(booking.charges[0].amount)}.00</span>{' '}
+                  <span>
+                    <small>(${booking.property.price_per_night}/day)</small>
+                  </span>
                 </h5>
                 <hr />
                 <h5 className='card-text'>

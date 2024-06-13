@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '@src/layout';
-import { safeCredentials, handleErrors, safeCredentialsForm } from '@utils/fetchHelper';
+import { handleErrors, safeCredentialsForm } from '@utils/fetchHelper';
 import PropertyForm from '../propertyForm';
 
 import './hostProperty.scss';
@@ -25,10 +25,12 @@ class HostProperty extends React.Component {
       authenticated: false,
       loading: true,
       previewImage: null,
+      completeForm: false,
     };
   }
 
   componentDidMount() {
+    // Check if user is authenticated
     fetch('/api/authenticated')
       .then(handleErrors)
       .then((data) => {
@@ -41,39 +43,57 @@ class HostProperty extends React.Component {
 
   handleInputChange = (e) => {
     const { name, value, type } = e.target;
+    // handle image input
     if (type === 'file') {
-      this.setState(prevState => ({
-        property: {
-          ...prevState.property,
-          images: e.target.files,
-        }, 
-        previewImage: URL.createObjectURL(e.target.files[0]),
-      }));
+      this.setState(
+        (prevState) => ({
+          property: {
+            ...prevState.property,
+            images: e.target.files,
+          },
+          previewImage: URL.createObjectURL(e.target.files[0]),
+        }),
+        () => this.checkFormCompletion()
+      );
     } else {
-      this.setState(prevState => ({
-        property: {
-          ...prevState.property,
-          [name]: name === 'price_per_night' ? parseFloat(value) : value,
-        },
-      }));
+      // handle text/number input
+      this.setState(
+        (prevState) => ({
+          property: {
+            ...prevState.property,
+            [name]: name === 'price_per_night' ? parseFloat(value) : value,
+          },
+        }),
+        () => this.checkFormCompletion()
+      );
     }
   };
 
+  // check if all fields are filled
+  checkFormCompletion = () => {
+    const { property } = this.state;
+    const completeForm = Object.values(property).every((value) => value !== '' && value !== 0 && value.length !== 0);
+    this.setState({ completeForm });
+  };
+
+  // handle create form submission
   handleSubmit = (e) => {
     e.preventDefault();
-
+    const { property } = this.state;
     var formData = new FormData();
 
-    Object.keys(this.state.property).forEach((key) => {
+    // loop through property object and append to formData
+    Object.keys(property).forEach((key) => {
       if (key === 'images') {
-        for (let i = 0; i < this.state.property[key].length; i++){
-          formData.append(`property[${key}][]`, this.state.property[key][i]);
+        for (let i = 0; i < property[key].length; i++) {
+          formData.append(`property[${key}][]`, property[key][i]);
         }
       } else {
-        formData.set(`property[${key}]`, this.state.property[key]);
+        formData.set(`property[${key}]`, property[key]);
       }
     });
 
+    // post property
     fetch(
       '/api/properties',
       safeCredentialsForm({
@@ -90,6 +110,7 @@ class HostProperty extends React.Component {
   };
 
   render() {
+    // if user is not authenticated, show a message to log in
     if (!this.state.authenticated) {
       return (
         <Layout>
@@ -112,6 +133,7 @@ class HostProperty extends React.Component {
                 formType='create'
                 previewImage={this.state.previewImage}
                 changedFields={[]}
+                completeForm={this.state.completeForm}
               />
             </div>
           </div>

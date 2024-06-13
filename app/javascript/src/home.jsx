@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Layout from '@src/layout';
 import { handleErrors } from '@utils/fetchHelper';
-import './home.scss'
+import './home.scss';
 
 class Home extends React.Component {
   state = {
@@ -13,37 +13,39 @@ class Home extends React.Component {
     loading: true,
   };
 
+  // Fetch properties on mount
   componentDidMount() {
     fetch('/api/properties?page=1')
       .then(handleErrors)
-      .then(data => {
+      .then((data) => {
         this.setState({
           properties: data.properties,
           total_pages: data.total_pages,
           next_page: data.next_page,
           loading: false,
-        }, () => console.log(this.state))
-      })
+        });
+      });
   }
 
+  // Fetch more properties on button click
   loadMore = () => {
-    if(this.state.next_page === null) {
+    if (this.state.next_page === null) {
       return;
     }
 
-    this.setState({loading: true});
+    this.setState({ loading: true });
 
     fetch(`/api/properties?page=${this.state.next_page}`)
       .then(handleErrors)
-      .then(data => {
+      .then((data) => {
         this.setState({
           properties: this.state.properties.concat(data.properties),
           total_pages: data.total_pages,
           next_page: data.next_page,
           loading: false,
-        })
-      })
-  }
+        });
+      });
+  };
 
   render() {
     const { properties, next_page, loading } = this.state;
@@ -54,14 +56,13 @@ class Home extends React.Component {
           <p className='text-secondary mb-3'>Explore some of the best-reviewed stays in the world</p>
           <div className='row'>
             {properties.map((property) => {
-              let image = property.images[0] ? property.images[0].url : `https://cdn.altcademy.com/assets/images/medium/airbnb_clone/${property.id-1}.jpg`;
+              let image = property.images[0]
+                ? property.images[0].url
+                : `https://cdn.altcademy.com/assets/images/medium/airbnb_clone/${property.id - 1}.jpg`;
               return (
                 <div className='col-6 col-lg-4 mb-4 property' key={property.id}>
                   <a href={`/property/${property.id}`} className='text-body text-decoration-none'>
-                    <div
-                      className='property-image mb-1 rounded'
-                      style={{ backgroundImage: `url(${image})` }}
-                    />
+                    <div className='property-image mb-1 rounded' style={{ backgroundImage: `url(${image})` }} />
                     <p className='text-uppercase mb-0 text-secondary'>
                       <small>
                         <b>{property.city}</b>
@@ -77,11 +78,13 @@ class Home extends React.Component {
             })}
           </div>
           {loading && <p className='text-center'>loading...</p>}
-          {(loading || next_page === null) || 
-            <div className="text-center">
-              <button className="btn btn-light mb-4" onClick={this.loadMore}>Load More</button>
+          {loading || next_page === null || (
+            <div className='text-center'>
+              <button className='btn btn-light mb-4' onClick={this.loadMore}>
+                Load More
+              </button>
             </div>
-          }
+          )}
         </div>
       </Layout>
     );
