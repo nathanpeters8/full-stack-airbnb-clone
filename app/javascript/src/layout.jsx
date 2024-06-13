@@ -5,6 +5,7 @@ import { safeCredentials, handleErrors } from '@utils/fetchHelper';
 const Layout = (props) => {
   const [loggedIn, setLoggedIn] = useState(false);
 
+  // Check if user is authenticated on mount
   useEffect(() => {
     fetch(
       '/api/authenticated',
@@ -18,6 +19,7 @@ const Layout = (props) => {
       });
   }, []);
 
+  // Handle user logout
   const handleLogout = (e) => {
     e.preventDefault();
 

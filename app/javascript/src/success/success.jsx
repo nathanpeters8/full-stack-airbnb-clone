@@ -3,10 +3,12 @@ import Layout from '@src/layout';
 import { safeCredentials, handleErrors } from '@utils/fetchHelper';
 import './success.scss';
 
+// Success component
 const Success = ({ booking_id }) => {
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Fetch booking data on mount
   useEffect(() => {
     fetch(
       `/api/bookings/${booking_id}`,
@@ -33,6 +35,7 @@ const Success = ({ booking_id }) => {
             <h2>{`Thank You ${booking.user.username}!`}</h2>
             <h4 className='text-center'>{`Your payment for "${booking.property.title}" is processing. Please review and save all the following information about your booking.`}</h4>
           </div>
+          {/* Property image */}
           <div className='col-10 d-flex flex-column justify-content-center mt-5 mb-2'>
             {(() => {
               let image = booking.property.images[0]
@@ -41,6 +44,7 @@ const Success = ({ booking_id }) => {
 
               return <div className='property-image mb-1 rounded' style={{ backgroundImage: `url(${image})` }} />;
             })()}
+            {/* Property details */}
             <div className='card'>
               <div className='card-body'>
                 <h5 className='card-text'>

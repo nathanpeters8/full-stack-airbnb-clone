@@ -13,6 +13,7 @@ class Home extends React.Component {
     loading: true,
   };
 
+  // Fetch properties on mount
   componentDidMount() {
     fetch('/api/properties?page=1')
       .then(handleErrors)
@@ -26,6 +27,7 @@ class Home extends React.Component {
       })
   }
 
+  // Fetch more properties on button click
   loadMore = () => {
     if(this.state.next_page === null) {
       return;

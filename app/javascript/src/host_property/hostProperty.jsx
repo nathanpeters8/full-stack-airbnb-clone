@@ -30,6 +30,7 @@ class HostProperty extends React.Component {
   }
 
   componentDidMount() {
+    // Check if user is authenticated
     fetch('/api/authenticated')
       .then(handleErrors)
       .then((data) => {
@@ -42,6 +43,7 @@ class HostProperty extends React.Component {
 
   handleInputChange = (e) => {
     const { name, value, type } = e.target;
+    // handle image input
     if (type === 'file') {
       this.setState((prevState) => ({
         property: {
@@ -51,6 +53,7 @@ class HostProperty extends React.Component {
         previewImage: URL.createObjectURL(e.target.files[0]),
       }), () => this.checkFormCompletion());
     } else {
+      // handle text/number input
       this.setState((prevState) => ({
         property: {
           ...prevState.property,
@@ -60,17 +63,20 @@ class HostProperty extends React.Component {
     }
   };
 
+  // check if all fields are filled
   checkFormCompletion = () => {
     const { property } = this.state;
     const completeForm = Object.values(property).every((value) => value !== '' && value !== 0 && value.length !== 0);
     this.setState({ completeForm });
   }
 
+  // handle create form submission
   handleSubmit = (e) => {
     e.preventDefault();
     const { property } = this.state;
     var formData = new FormData();
 
+    // loop through property object and append to formData
     Object.keys(property).forEach((key) => {
       if (key === 'images') {
         for (let i = 0; i < property[key].length; i++) {
@@ -81,6 +87,7 @@ class HostProperty extends React.Component {
       }
     });
 
+    // post property
     fetch(
       '/api/properties',
       safeCredentialsForm({
@@ -97,6 +104,7 @@ class HostProperty extends React.Component {
   };
 
   render() {
+    // if user is not authenticated, show a message to log in
     if (!this.state.authenticated) {
       return (
         <Layout>

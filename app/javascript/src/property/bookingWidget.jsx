@@ -7,17 +7,22 @@ import { safeCredentials, handleErrors } from '@utils/fetchHelper';
 import 'react-dates/lib/css/_datepicker.css';
 
 class BookingWidget extends React.Component {
-  state = {
-    authenticated: false,
-    existingBookings: [],
-    startDate: null,
-    endDate: null,
-    focusedInput: null,
-    loading: false,
-    error: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      authenticated: false,
+      existingBookings: [],
+      startDate: null,
+      endDate: null,
+      focusedInput: null,
+      loading: false,
+      error: false,
+    };
+  }
+    
 
   componentDidMount() {
+    // Check if user is authenticated
     fetch('/api/authenticated')
       .then(handleErrors)
       .then((data) => {
@@ -29,6 +34,7 @@ class BookingWidget extends React.Component {
     this.getPropertyBookings();
   }
 
+  // Fetch existing bookings for the property
   getPropertyBookings = () => {
     fetch(`/api/properties/${this.props.property_id}/bookings`)
       .then(handleErrors)
@@ -40,6 +46,7 @@ class BookingWidget extends React.Component {
       });
   };
 
+  // Submit booking
   submitBooking = (e) => {
     if (e) {
       e.preventDefault();
@@ -70,6 +77,7 @@ class BookingWidget extends React.Component {
       });
   };
 
+  // initiate stripe checkout page
   initiateStripeCheckout = (booking_id) => {
     return fetch(
       `/api/charges?booking_id=${booking_id}&cancel_url=${window.location.pathname}`,
@@ -95,18 +103,24 @@ class BookingWidget extends React.Component {
       });
   };
 
+  // Update date range
   onDatesChange = ({ startDate, endDate }) => this.setState({ startDate, endDate });
 
+  // Update focused input
   onFocusChange = (focusedInput) => this.setState({ focusedInput });
 
+  // Check if check-in day is blocked
   isCheckInDayBlocked = (day) =>
     this.state.existingBookings.filter((b) => day.isBetween(b.start_date, b.end_date, 'day', '[)')).length > 0;
 
+  // Check if check-out day is blocked
   isCheckOutDayBlocked = (day) =>
     this.state.existingBookings.filter((b) => day.isBetween(b.start_date, b.end_date, 'day', '(]')).length > 0;
 
   render() {
     const { authenticated, startDate, endDate, focusedInput } = this.state;
+
+    // if user is not authenticated, show a message to log in
     if (!authenticated) {
       return (
         <div className='border p-4 mb-4'>
@@ -130,6 +144,7 @@ class BookingWidget extends React.Component {
             ${price_per_night} <small>per night</small>
           </h5>
           <hr />
+          {/* Calendar input */}
           <div style={{ marginBottom: focusedInput ? '400px' : '2rem' }}>
             <DateRangePicker
               startDate={startDate}

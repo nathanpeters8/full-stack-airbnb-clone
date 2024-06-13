@@ -11,19 +11,23 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
 import './property.scss';
 
 class Property extends React.Component {
-  state = {
-    property: {},
-    loading: true,
-    showEditModal: false,
-    showDeleteModal: false,
-    previewImage: null,
-    changedFields: [],
-    isAuthenticated: false,
-    currentUser: null,
-    currentImageIndex: 0,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      property: {},
+      loading: true,
+      showEditModal: false,
+      showDeleteModal: false,
+      previewImage: null,
+      changedFields: [],
+      isAuthenticated: false,
+      currentUser: null,
+      currentImageIndex: 0,
+    };
+  }
 
   componentDidMount() {
+    // Fetch property data
     fetch(`/api/properties/${this.props.property_id}`)
       .then(handleErrors)
       .then((data) => {
@@ -33,6 +37,7 @@ class Property extends React.Component {
         });
       });
 
+    // Check if user is authenticated
     fetch(
       '/api/authenticated',
       safeCredentials({
@@ -45,10 +50,12 @@ class Property extends React.Component {
       });
   }
 
+  // Open edit modal
   handleOpenEditModal = () => {
     this.setState({ showEditModal: true });
   };
 
+  // Close edit modal and reload page
   handleCloseEditModal = () => {
     this.setState({ showEditModal: false }, () => {
       this.setState({ changedFields: [] }, () => {
@@ -57,27 +64,33 @@ class Property extends React.Component {
     });
   };
 
+  // Open delete modal
   handleOpenDeleteModal = () => {
     this.setState({ showDeleteModal: true });
   };
 
+  // Close delete modal
   handleCloseDeleteModal = () => {
     this.setState({ showDeleteModal: false });
   };
 
+  // Next image
   nextImage = () => {
     const { property, currentImageIndex } = this.state;
     this.setState({ currentImageIndex: (currentImageIndex + 1) % property.images.length });
   };
 
+  // Previous image
   prevImage = () => {
     const { property, currentImageIndex } = this.state;
     this.setState({ currentImageIndex: (currentImageIndex - 1 + property.images.length) % property.images.length });
   };
 
+  // Handle input changes
   handleInputChange = (e) => {
     const { name, value, type } = e.target;
 
+    // Handle image input
     if (type === 'file') {
       this.setState((prevState) => ({
         property: {
@@ -88,6 +101,7 @@ class Property extends React.Component {
         changedFields: [...prevState.changedFields, name],
       }));
     } else {
+      // Handle text/number input
       this.setState((prevState) => ({
         property: {
           ...prevState.property,
@@ -98,6 +112,7 @@ class Property extends React.Component {
     }
   };
 
+  // Handle delete property
   handleDelete = () => {
     fetch(
       `/api/properties/${this.props.property_id}`,
@@ -113,12 +128,14 @@ class Property extends React.Component {
       });
   };
 
+  // Handle edit form submission
   handleSubmit = (e) => {
     e.preventDefault();
 
     const { property, changedFields, isAuthenticated } = this.state;
     const formData = new FormData();
 
+    // loop through changed fields and append to formData
     changedFields.forEach((field) => {
       if (field !== 'user' && field !== 'id') {
         if (field === 'images') {
@@ -131,6 +148,7 @@ class Property extends React.Component {
       }
     });
 
+    // Update property with new data
     fetch(
       `/api/properties/${this.props.property_id}`,
       safeCredentialsForm({
@@ -148,10 +166,7 @@ class Property extends React.Component {
   render() {
     const { property, loading, previewImage, currentUser, changedFields, currentImageIndex } = this.state;
 
-    if (loading) {
-      return <p>loading...</p>;
-    }
-
+    // property fields
     const {
       id,
       title,
@@ -168,26 +183,34 @@ class Property extends React.Component {
       user,
     } = property;
 
+    if (loading) {
+      return <p>loading...</p>;
+    }
+
+    // Get current image to display
     const currentImage =
       images.length > 0
         ? images[currentImageIndex].url
         : `https://cdn.altcademy.com/assets/images/medium/airbnb_clone/${property.id - 1}.jpg`;
 
+
     return (
       <Layout>
         <div className='container'>
           <div className='row'>
+            {/* Image Slideshow */}
             <div
               className='col-12 property-image mb-3 d-flex align-items-center justify-content-between'
               style={{ backgroundImage: `url(${currentImage})` }}
             >
-              <button className={`btn btn-danger btn-lg ${images.length < 2 ? 'd-none' : ''}`} onClick={this.prevImage}>
+              <button className={`btn btn-danger text-light btn-lg focus-ring ${images.length < 2 ? 'd-none' : ''}`} onClick={this.prevImage}>
                 <FontAwesomeIcon icon={faChevronLeft}/>
               </button>
-              <button className={`btn btn-danger btn-lg ${images.length < 2 ? 'd-none' : ''}`} onClick={this.nextImage}>
+              <button className={`btn btn-danger text-light btn-lg focus-ring ${images.length < 2 ? 'd-none' : ''}`} onClick={this.nextImage}>
                 <FontAwesomeIcon icon={faChevronRight}/>
               </button>
             </div>
+            {/* Property details */}
             <div className='info col-8'>
               <div className='mb-3'>
                 <h3 className='mb-0'>{title}</h3>
@@ -216,6 +239,7 @@ class Property extends React.Component {
               <hr />
               <p>{description}</p>
             </div>
+            {/* Edit and Delete buttons */}
             {(() => {
               if (currentUser !== user.username) {
                 return null;
@@ -235,6 +259,7 @@ class Property extends React.Component {
                 </div>
               );
             })()}
+            {/* Booking widget */}
             <div className='col-12 col-lg-5'>
               <BookingWidget property_id={id} price_per_night={price_per_night} />
             </div>

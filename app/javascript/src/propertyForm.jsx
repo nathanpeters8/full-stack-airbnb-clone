@@ -3,11 +3,14 @@ import ReactDOM from 'react-dom';
 
 const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, previewImage, changedFields, completeForm }) => {
 
+  // Get image previews
   const getImagePreviews = () => {
+    // If no images and formType is create, return null
     if ((property.images.length === 0 && formType === 'create')) {
       return null;
     }
 
+    // If images exist, return image url(s)
     let imagesArray = Array.from(property.images);
     return imagesArray.map((image, i) => {
       return formType === 'create' || changedFields.includes('images') ? URL.createObjectURL(image) : image.url;
@@ -16,6 +19,7 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
 
   return (
     <form className='row g-2 d-flex justify-content-center' onSubmit={handleSubmit}>
+      {/* Title */}
       <div className='col-10 text-center mb-2'>
         <label htmlFor='inputTitle' className='form-label'>
           Property Title
@@ -30,6 +34,7 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
           value={property.title}
         />
       </div>
+      {/* Description */}
       <div className='col-10 text-center mb-2'>
         <label htmlFor='inputDescription' className='form-label'>
           Description
@@ -43,6 +48,7 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
           value={property.description}
         ></textarea>
       </div>
+      {/* Property Type */}
       <div className='col-10 text-center mb-2'>
         <label htmlFor='inputType' className='form-label'>
           Property Type
@@ -57,6 +63,7 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
           value={property.property_type}
         />
       </div>
+      {/* City */}
       <div className='row justify-content-center text-center mt-4'>
         <div className='col-4'>
           <input
@@ -68,6 +75,7 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
             value={property.city}
           />
         </div>
+        {/* Country */}
         <div className='col-4'>
           <input
             type='text'
@@ -79,6 +87,7 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
           />
         </div>
       </div>
+      {/* Price and Guests */}
       <div className='row justify-content-center text-center mt-4'>
         <div className='col-3 me-3'>
           <label htmlFor='inputPrice' className='form-label'>
@@ -115,6 +124,7 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
           </select>
         </div>
       </div>
+      {/* Rooms, Beds, Baths */}
       <div className='row justify-content-center text-center mt-4'>
         <div className='col-2'>
           <label htmlFor='inputRooms' className='form-label'>
@@ -180,6 +190,7 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
           </select>
         </div>
       </div>
+      {/* Image previews */}
       <div className='col-10 mt-4 d-flex justify-content-center gap-2'>
         {(() => {
           let imgs = getImagePreviews();
@@ -204,6 +215,7 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
           });
         })()}
       </div>
+      {/* Image Upload */}
       <div className='col-10 mt-4'>
         <input
           type='file'
@@ -214,6 +226,7 @@ const PropertyForm = ({ handleInputChange, handleSubmit, property, formType, pre
           multiple
         />
       </div>
+      {/* Submit button */}
       <div className={`col-6 text-center my-4 ${formType === 'edit' ? 'd-none' : ''}`}>
         <button type='submit' className={`btn btn-warning ${!completeForm && formType === 'create' ? 'disabled' : ''}`}>
           Host Property

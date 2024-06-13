@@ -17,6 +17,7 @@ class Bookings extends React.Component {
   }
 
   componentDidMount() {
+    // Check if user is authenticated
     fetch('/api/authenticated')
       .then(handleErrors)
       .then((data) => {
@@ -26,12 +27,14 @@ class Bookings extends React.Component {
         });
       })
       .then(() => {
+        // If user is authenticated, show properties
         if (this.state.authenticated) {
           this.showProperties();
         }
       });
   }
-
+  
+  // Fetch bookings data
   showProperties = () => {
     let endpoint = this.state.show_booked_properties ? 'bookings' : 'property_bookings';
 
@@ -45,6 +48,7 @@ class Bookings extends React.Component {
       });
   };
 
+  // Initiate Stripe checkout
   initiateStripeCheckout = (booking_id) => {
     fetch(
       `/api/charges?booking_id=${booking_id}&cancel_url=${window.location.pathname}`,
@@ -70,6 +74,7 @@ class Bookings extends React.Component {
       });
   };
 
+  // Handle payment button click
   handlePayment = (e, booking_id) => {
     e.preventDefault();
     return this.initiateStripeCheckout(booking_id);
@@ -78,6 +83,7 @@ class Bookings extends React.Component {
   render() {
     const { bookings, loading, authenticated, show_booked_properties } = this.state;
 
+    // If user is not authenticated, show a message to log in
     if (!authenticated) {
       return (
         <Layout>
@@ -93,6 +99,7 @@ class Bookings extends React.Component {
           <div className='row'>
             <h1 className='text-center my-5'>Bookings</h1>
             <div className='col-12'>
+              {/* Booking buttons */}
               <div className='booking-buttons d-flex justify-content-center gap-2 mb-5'>
                 <button
                   className='btn btn-lg btn-primary'
@@ -116,6 +123,7 @@ class Bookings extends React.Component {
                 </button>
               </div>
               {bookings.length === 0 && authenticated && <h1 className='text-center'>No Bookings</h1>}
+              {/* Bookings table */}
               <div className={`table-responsive ${bookings.length === 0 || !authenticated ? 'd-none' : ''}`}>
                 <table className='table table-striped table-hover table-bordered align-items-center'>
                   <thead>
@@ -133,7 +141,7 @@ class Bookings extends React.Component {
                       )}
                       <th>Check In - Check Out</th>
                       <th>Paid?</th>
-                      <th>Actions</th>
+                      {/* <th>Actions</th> */}
                     </tr>
                   </thead>
                   <tbody>
@@ -152,6 +160,7 @@ class Bookings extends React.Component {
                           </tr>
                         );
                       }
+                      // Display bookings
                       return bookings.map((booking) => {
                         let image = booking.property.images[0]
                           ? booking.property.images[0].url
@@ -164,6 +173,7 @@ class Bookings extends React.Component {
                         );
                         return (
                           <tr className='align-middle text-center' key={booking.id}>
+                            {/* Property image and link */}
                             <td>
                               <a
                                 href={`/property/${booking.property.property_id}`}
@@ -182,14 +192,18 @@ class Bookings extends React.Component {
                                 />
                               </a>
                             </td>
+                            {/* Property title */}
                             <td>{booking.property.title}</td>
+                            {/* Username */}
                             <td>
                               {this.state.show_booked_properties ? booking.property.username : booking.user.username}
                             </td>
+                            {/* Price */}
                             <td>
                               ${booking.property.price_per_night * days}{' '}
                               <small className='fw-light fst-italic'>(${booking.property.price_per_night}/day)</small>
                             </td>
+                            {/* Rooms, beds and baths */}
                             {show_booked_properties && (
                               <>
                                 <td>{booking.property.bedrooms}</td>
@@ -197,9 +211,11 @@ class Bookings extends React.Component {
                                 <td>{booking.property.baths}</td>
                               </>
                             )}
+                            {/* Check In and Check Out Dates */}
                             <td>
                               {booking.start_date} - {booking.end_date}
                             </td>
+                            {/* Payment status */}
                             {(() => {
                               if (!show_booked_properties) {
                                 return <td>{booking.paid ? 'Yes' : 'No'}</td>;
@@ -219,9 +235,9 @@ class Bookings extends React.Component {
                                 </td>
                               );
                             })()}
-                            <td>
+                            {/* <td>
                               <button className='btn btn-danger'>Cancel</button>
-                            </td>
+                            </td> */}
                           </tr>
                         );
                       });
